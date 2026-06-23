@@ -53,7 +53,7 @@ public sealed class BookingFilterApiTests
     public async Task GetBookingsByFirstName_ShouldReturnFilteredResults()
     {
         // Seed a booking with a unique first name so we can filter for it precisely.
-        var uniqueFirstName = $"FilterTest{Guid.NewGuid():N[..6]}";
+        var uniqueFirstName = "FilterTest" + Guid.NewGuid().ToString("N")[..8];
         TestLogger.Step($"Creating a booking with unique first name: {uniqueFirstName}");
 
         var token = await _client.CreateTokenAsync();
