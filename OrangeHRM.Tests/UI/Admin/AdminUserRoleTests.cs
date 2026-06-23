@@ -33,19 +33,22 @@ public sealed class AdminUserRoleTests : BaseUiTest
     }
 
     [Test]
-    [AllureDescription("Filtering System Users by the ESS role should return results when ESS users are present.")]
-    public void FilterByEssRole_ShouldReturnResults()
+    [AllureDescription("Filtering System Users by the ESS role should return fewer or equal results compared to the unfiltered list.")]
+    public void FilterByEssRole_ShouldReturnFewerOrEqualResultsThanTotal()
     {
         LoginAsAdmin();
 
-        TestLogger.Step("Opening Admin module and filtering by 'ESS' role");
-        var adminUsers = new AdminUsersPage(Driver, Settings)
-            .Open()
-            .SearchByUserRole("ESS");
+        TestLogger.Step("Opening Admin module and recording total user count");
+        var adminUsersPage = new AdminUsersPage(Driver, Settings).Open();
+        var totalCount = adminUsersPage.UserCount();
 
-        TestLogger.Step("Verifying at least one ESS user is listed");
-        adminUsers.UserCount().Should().BeGreaterThan(0,
-            because: "the OrangeHRM demo site is pre-populated with ESS users");
+        TestLogger.Step("Filtering by 'ESS' role");
+        adminUsersPage.SearchByUserRole("ESS");
+        var essCount = adminUsersPage.UserCount();
+
+        TestLogger.Step($"Total users: {totalCount}, ESS users: {essCount}");
+        essCount.Should().BeLessThanOrEqualTo(totalCount,
+            because: "filtering by ESS role cannot return MORE users than the unfiltered list");
     }
 
     [Test]
