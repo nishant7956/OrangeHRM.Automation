@@ -1,4 +1,3 @@
-using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -9,7 +8,6 @@ using OrangeHRM.Framework.Support;
 
 namespace OrangeHRM.Tests.Hooks;
 
-[AllureNUnit]
 [AllureSuite("OrangeHRM UI")]
 public abstract class BaseUiTest
 {
