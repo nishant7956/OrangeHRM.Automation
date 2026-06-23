@@ -1,0 +1,94 @@
+name: Automation Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: Test suite to run
+        required: true
+        default: smoke
+        type: choice
+        options:
+          - smoke
+          - api
+          - regression
+          - all
+  schedule:
+    - cron: '30 10 * * 1-5'
+
+jobs:
+  test:
+    name: Run automation tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      BROWSER: Chrome
+      HEADLESS: true
+      ORANGEHRM_BASE_URL: https://opensource-demo.orangehrmlive.com/web/index.php
+      ORANGEHRM_USERNAME: Admin
+      ORANGEHRM_PASSWORD: admin123
+      BOOKER_BASE_URL: https://restful-booker.herokuapp.com
+      TEST_ARTIFACTS_DIR: TestResults
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore OrangeHRM.Automation.sln
+
+      - name: Build
+        run: dotnet build OrangeHRM.Automation.sln --configuration Release --no-restore
+
+      - name: Run selected tests
+        shell: pwsh
+        run: |
+          $eventName = "${{ github.event_name }}"
+          $suite = "${{ github.event.inputs.test_suite }}"
+
+          if ($eventName -eq "schedule") {
+            $filter = "TestCategory=Regression|TestCategory=API"
+          } elseif ($suite -eq "api") {
+            $filter = "TestCategory=API"
+          } elseif ($suite -eq "regression") {
+            $filter = "TestCategory=Regression|TestCategory=API"
+          } elseif ($suite -eq "all") {
+            $filter = ""
+          } else {
+            $filter = "TestCategory=Smoke|TestCategory=API"
+          }
+
+          $args = @(
+            "test",
+            "OrangeHRM.Automation.sln",
+            "--configuration", "Release",
+            "--no-build",
+            "--logger", "trx;LogFileName=test-results.trx",
+            "--results-directory", "TestResults"
+          )
+
+          if ($filter -ne "") {
+            $args += @("--filter", $filter)
+          }
+
+          dotnet @args
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-test-artifacts
+          path: |
+            TestResults/**
+            **/bin/**/allure-results/**
+          if-no-files-found: ignore
