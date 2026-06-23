@@ -17,3 +17,7 @@ public sealed record Booking(
 public sealed record BookingCreateResponse(
     [property: JsonPropertyName("bookingid")] int BookingId,
     [property: JsonPropertyName("booking")] Booking Booking);
+
+/// <summary>Represents one item in the GET /booking list response.</summary>
+public sealed record BookingIdItem(
+    [property: JsonPropertyName("bookingid")] int BookingId);

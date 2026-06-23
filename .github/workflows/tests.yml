@@ -18,13 +18,25 @@ on:
           - regression
           - all
   schedule:
-    - cron: '30 10 * * 1-5'
+    # Daily at 10:30 UTC — 6:30 AM Toronto ET during daylight saving time
+    - cron: '30 10 * * *'
+
+# Cancel in-progress runs on the same branch/PR to save CI minutes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  # ─── Matrix: run smoke, regression, and API in parallel ───────────────────
   test:
-    name: Run automation tests
+    name: ${{ matrix.suite }} tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    strategy:
+      matrix:
+        suite: [smoke, regression, api]
+      fail-fast: false   # All suites run even if one fails
 
     env:
       BROWSER: Chrome
@@ -50,45 +62,143 @@ jobs:
       - name: Build
         run: dotnet build OrangeHRM.Automation.sln --configuration Release --no-restore
 
-      - name: Run selected tests
+      # ── Resolve which filter to apply ──────────────────────────────────────
+      - name: Resolve test filter
+        id: filter
         shell: pwsh
         run: |
           $eventName = "${{ github.event_name }}"
-          $suite = "${{ github.event.inputs.test_suite }}"
+          $inputSuite = "${{ github.event.inputs.test_suite }}"
+          $matrixSuite = "${{ matrix.suite }}"
 
-          if ($eventName -eq "schedule") {
-            $filter = "TestCategory=Regression|TestCategory=API"
-          } elseif ($suite -eq "api") {
-            $filter = "TestCategory=API"
-          } elseif ($suite -eq "regression") {
-            $filter = "TestCategory=Regression|TestCategory=API"
-          } elseif ($suite -eq "all") {
-            $filter = ""
-          } else {
-            $filter = "TestCategory=Smoke|TestCategory=API"
+          # Manual dispatch overrides matrix: run only what was requested
+          if ($eventName -eq "workflow_dispatch" -and $inputSuite -ne "" -and $inputSuite -ne "all") {
+            # Skip suites not matching the manual selection
+            if ($matrixSuite -ne $inputSuite) {
+              echo "SKIP=true" >> $env:GITHUB_OUTPUT
+              exit 0
+            }
           }
 
+          $filter = switch ($matrixSuite) {
+            "smoke"      { "TestCategory=Smoke|TestCategory=API" }
+            "regression" { "TestCategory=Regression" }
+            "api"        { "TestCategory=API" }
+            default      { "" }
+          }
+
+          # Scheduled runs: regression + API only (no smoke-only leg needed)
+          if ($eventName -eq "schedule" -and $matrixSuite -eq "smoke") {
+            echo "SKIP=true" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+
+          echo "FILTER=$filter" >> $env:GITHUB_OUTPUT
+          echo "SKIP=false" >> $env:GITHUB_OUTPUT
+
+      # ── Run tests ──────────────────────────────────────────────────────────
+      - name: Run ${{ matrix.suite }} tests
+        if: steps.filter.outputs.SKIP != 'true'
+        shell: pwsh
+        run: |
+          $filter = "${{ steps.filter.outputs.FILTER }}"
           $args = @(
-            "test",
-            "OrangeHRM.Automation.sln",
+            "test", "OrangeHRM.Automation.sln",
             "--configuration", "Release",
             "--no-build",
-            "--logger", "trx;LogFileName=test-results.trx",
-            "--results-directory", "TestResults"
+            "--logger", "trx;LogFileName=${{ matrix.suite }}-results.trx",
+            "--results-directory", "TestResults",
+            "--blame-hang-timeout", "2m"
           )
-
-          if ($filter -ne "") {
-            $args += @("--filter", $filter)
-          }
-
+          if ($filter -ne "") { $args += @("--filter", $filter) }
           dotnet @args
 
-      - name: Upload test artifacts
-        if: always()
+      # ── Upload per-suite artifacts ─────────────────────────────────────────
+      - name: Upload ${{ matrix.suite }} artifacts
+        if: always() && steps.filter.outputs.SKIP != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: automation-test-artifacts
+          name: test-artifacts-${{ matrix.suite }}
           path: |
             TestResults/**
             **/bin/**/allure-results/**
           if-no-files-found: ignore
+
+  # ─── Merge results + publish Allure report to GitHub Pages ────────────────
+  report:
+    name: Publish Allure Report
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: downloaded-artifacts
+
+      # Merge allure-results from all matrix legs into one directory
+      - name: Merge Allure results
+        shell: bash
+        run: |
+          mkdir -p allure-results
+          find downloaded-artifacts -name "*.json" -o -name "*.xml" -o -name "*.png" \
+            | xargs -I{} cp {} allure-results/ 2>/dev/null || true
+
+      - name: Generate Allure report
+        uses: simple-elf/allure-report-action@v1.9
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+          gh_pages: gh-pages
+          allure_history: allure-history
+          keep_reports: 30
+
+      - name: Publish Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          force_orphan: false
+
+      # ── Write job summary ─────────────────────────────────────────────────
+      - name: Write job summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## 🧪 Automation Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          for suite in smoke regression api; do
+            dir="downloaded-artifacts/test-artifacts-${suite}"
+            if [ -d "$dir" ]; then
+              trx=$(find "$dir" -name "*.trx" | head -1)
+              if [ -n "$trx" ]; then
+                passed=$(grep -o 'outcome="Passed"' "$trx" | wc -l | tr -d ' ')
+                failed=$(grep -o 'outcome="Failed"' "$trx" | wc -l | tr -d ' ')
+                if [ "$failed" -eq 0 ]; then
+                  status="✅ Passed ($passed passed)"
+                else
+                  status="❌ Failed ($passed passed, $failed failed)"
+                fi
+              else
+                status="⏭️ Skipped"
+              fi
+            else
+              status="⏭️ Skipped"
+            fi
+            echo "| \`${suite}\` | ${status} |" >> $GITHUB_STEP_SUMMARY
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View full Allure report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Run triggered by: \`${{ github.event_name }}\` on \`${{ github.ref_name }}\`_" >> $GITHUB_STEP_SUMMARY

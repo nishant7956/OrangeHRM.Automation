@@ -23,4 +23,17 @@ public sealed class LeavePage : BasePage
     {
         return new SearchFilterPanel(Driver, Settings).HasSearchButton();
     }
+
+    /// <summary>Returns true when the Leave List page header is visible.</summary>
+    public bool IsLoaded()
+    {
+        try
+        {
+            return Waiter.Visible(LeaveListHeader).Displayed;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            return false;
+        }
+    }
 }

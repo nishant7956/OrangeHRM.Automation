@@ -39,4 +39,60 @@ public sealed class DataTableComponent
             .Where(text => !string.IsNullOrWhiteSpace(text))
             .ToList();
     }
+
+    /// <summary>Returns the number of visible rows in the table body.</summary>
+    public int RowCount()
+    {
+        try
+        {
+            return _waiter.Until(driver =>
+            {
+                var rows = driver.FindElements(TableRows).Where(r => r.Displayed).ToList();
+                return rows.Count > 0 ? rows.Count : (int?)null;
+            }) ?? 0;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            return 0;
+        }
+    }
+
+    /// <summary>
+    /// Returns true when the OrangeHRM "No Records Found" empty state is visible.
+    /// Useful for asserting that a search returned zero results.
+    /// </summary>
+    public bool NoResultsVisible()
+    {
+        try
+        {
+            var emptyState = By.XPath("//span[contains(normalize-space(),'No Records Found')]");
+            return _waiter.Until(driver =>
+            {
+                var el = driver.FindElements(emptyState).FirstOrDefault();
+                return el?.Displayed == true ? true : (bool?)null;
+            }) ?? false;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Clicks a labelled action button (e.g., Edit, Delete) within the row whose text
+    /// contains <paramref name="rowText"/>.
+    /// </summary>
+    public void ClickActionOnRow(string rowText, string actionLabel)
+    {
+        var rows = _driver.FindElements(TableRows)
+            .Where(row => row.Displayed && row.Text.Contains(rowText, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (rows.Count == 0)
+            throw new NoSuchElementException($"No visible table row containing '{rowText}' was found.");
+
+        var actionButton = rows[0].FindElement(
+            By.XPath($".//button[@title='{actionLabel}' or normalize-space()='{actionLabel}']"));
+        actionButton.Click();
+    }
 }

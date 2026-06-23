@@ -8,6 +8,7 @@ public sealed class AdminUsersPage : BasePage
 {
     private static readonly By SystemUsersHeader = By.XPath("//h5[normalize-space()='System Users']");
     private static readonly By UsernameInput = By.XPath("//label[normalize-space()='Username']/ancestor::div[contains(@class,'oxd-input-group')]//input");
+    private static readonly By UserRoleDropdown = By.XPath("//label[normalize-space()='User Role']/ancestor::div[contains(@class,'oxd-input-group')]//div[@class='oxd-select-text-input']");
     private static readonly By AddButton = By.XPath("//button[normalize-space()='Add']");
     private static readonly By SaveButton = By.CssSelector("button[type='submit']");
     private static readonly By RequiredMessages = By.XPath("//span[normalize-space()='Required']");
@@ -29,6 +30,17 @@ public sealed class AdminUsersPage : BasePage
         new SearchFilterPanel(Driver, Settings).Search();
         return this;
     }
+
+    /// <summary>Filters System Users by user role (e.g., "Admin" or "ESS").</summary>
+    public AdminUsersPage SearchByUserRole(string roleName)
+    {
+        Click(UserRoleDropdown);
+        SelectAutocompleteOption(roleName);
+        new SearchFilterPanel(Driver, Settings).Search();
+        return this;
+    }
+
+    public int UserCount() => new DataTableComponent(Driver, Settings).RowCount();
 
     public bool HasUser(string username)
     {

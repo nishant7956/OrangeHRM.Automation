@@ -1,6 +1,7 @@
 using OrangeHRM.Framework.Config;
 using OrangeHRM.Framework.Support;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace OrangeHRM.Framework.Pages;
 
@@ -63,6 +64,31 @@ public abstract class BasePage
     {
         var option = By.XPath($"//div[@role='option']//span[contains(normalize-space(), {XPathLiteral(inputText)})]");
         Waiter.Clickable(option).Click();
+    }
+
+    /// <summary>Waits until the browser reports document.readyState == 'complete'.</summary>
+    protected void WaitForPageLoad(TimeSpan? timeout = null)
+    {
+        var wait = timeout.HasValue
+            ? new WebDriverWait(Driver, timeout.Value)
+            : new WebDriverWait(Driver, TimeSpan.FromSeconds(Settings.TimeoutSeconds));
+
+        wait.Until(driver =>
+            ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState") as string == "complete");
+    }
+
+    /// <summary>Scrolls the element matching <paramref name="locator"/> into the viewport.</summary>
+    protected void ScrollIntoView(By locator)
+    {
+        var element = Driver.FindElement(locator);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({block:'center'})", element);
+    }
+
+    /// <summary>Selects an option in a native HTML &lt;select&gt; by visible text.</summary>
+    protected void SelectDropdown(By locator, string visibleText)
+    {
+        var select = new SelectElement(Waiter.Visible(locator));
+        select.SelectByText(visibleText);
     }
 
     public static string XPathLiteral(string value)

@@ -93,6 +93,31 @@ public sealed class RestfulBookerClient : IDisposable
         return response.StatusCode;
     }
 
+    /// <summary>Returns all booking IDs from GET /booking.</summary>
+    public async Task<IReadOnlyList<int>> GetAllBookingIdsAsync()
+    {
+        var response = await _client.GetAsync("booking");
+        response.EnsureSuccessStatusCode();
+
+        var results = await response.Content.ReadFromJsonAsync<BookingIdItem[]>(JsonOptions);
+        return results?.Select(r => r.BookingId).ToList() ?? [];
+    }
+
+    /// <summary>Returns booking IDs filtered by first and/or last name query params.</summary>
+    public async Task<IReadOnlyList<int>> GetBookingsByNameAsync(string? firstName = null, string? lastName = null)
+    {
+        var query = new List<string>();
+        if (firstName is not null) query.Add($"firstname={Uri.EscapeDataString(firstName)}");
+        if (lastName is not null) query.Add($"lastname={Uri.EscapeDataString(lastName)}");
+
+        var url = query.Count > 0 ? $"booking?{string.Join("&", query)}" : "booking";
+        var response = await _client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        var results = await response.Content.ReadFromJsonAsync<BookingIdItem[]>(JsonOptions);
+        return results?.Select(r => r.BookingId).ToList() ?? [];
+    }
+
     public void Dispose()
     {
         _client.Dispose();
