@@ -45,11 +45,11 @@ public sealed class DataTableComponent
     {
         try
         {
-            return _waiter.Until(driver =>
-            {
-                var rows = driver.FindElements(TableRows).Where(r => r.Displayed).ToList();
-                return rows.Count > 0 ? rows.Count : (int?)null;
-            }) ?? 0;
+            // Wait until at least one row is visible, then count synchronously.
+            _waiter.Until(driver =>
+                driver.FindElements(TableRows).Any(r => r.Displayed));
+
+            return _driver.FindElements(TableRows).Count(r => r.Displayed);
         }
         catch (WebDriverTimeoutException)
         {
@@ -66,11 +66,7 @@ public sealed class DataTableComponent
         try
         {
             var emptyState = By.XPath("//span[contains(normalize-space(),'No Records Found')]");
-            return _waiter.Until(driver =>
-            {
-                var el = driver.FindElements(emptyState).FirstOrDefault();
-                return el?.Displayed == true ? true : (bool?)null;
-            }) ?? false;
+            return _waiter.Visible(emptyState).Displayed;
         }
         catch (WebDriverTimeoutException)
         {
