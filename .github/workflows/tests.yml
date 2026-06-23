@@ -176,6 +176,8 @@ jobs:
         if: always()
         shell: bash
         run: |
+          set +e  # Don't abort on non-zero exit codes (grep returns 1 when no match)
+
           echo "## 🧪 Automation Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
@@ -184,14 +186,16 @@ jobs:
           for suite in smoke regression api; do
             dir="downloaded-artifacts/test-artifacts-${suite}"
             if [ -d "$dir" ]; then
-              trx=$(find "$dir" -name "*.trx" | head -1)
-              if [ -n "$trx" ]; then
-                passed=$(grep -o 'outcome="Passed"' "$trx" | wc -l | tr -d ' ')
-                failed=$(grep -o 'outcome="Failed"' "$trx" | wc -l | tr -d ' ')
-                if [ "$failed" -eq 0 ]; then
-                  status="✅ Passed ($passed passed)"
+              trx=$(find "$dir" -name "*.trx" 2>/dev/null | head -1)
+              if [ -n "$trx" ] && [ -f "$trx" ]; then
+                passed=$(grep -c 'outcome="Passed"' "$trx" 2>/dev/null || echo "0")
+                failed=$(grep -c 'outcome="Failed"' "$trx" 2>/dev/null || echo "0")
+                passed="${passed:-0}"
+                failed="${failed:-0}"
+                if [ "$failed" = "0" ]; then
+                  status="✅ Passed (${passed} passed)"
                 else
-                  status="❌ Failed ($passed passed, $failed failed)"
+                  status="❌ Failed (${passed} passed, ${failed} failed)"
                 fi
               else
                 status="⏭️ Skipped"
@@ -206,3 +210,4 @@ jobs:
           echo "📊 [View full Allure report](https://nishant7956.github.io/OrangeHRM.Automation/)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "_Run triggered by: \`${{ github.event_name }}\` on \`${{ github.ref_name }}\`_" >> $GITHUB_STEP_SUMMARY
+
