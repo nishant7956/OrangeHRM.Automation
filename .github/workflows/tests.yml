@@ -46,8 +46,6 @@ jobs:
       ORANGEHRM_PASSWORD: admin123
       BOOKER_BASE_URL: https://restful-booker.herokuapp.com
       TEST_ARTIFACTS_DIR: TestResults
-      # Pin Allure results to a known workspace-root directory per suite
-      ALLURE_RESULTS_DIRECTORY: ${{ github.workspace }}/allure-results-${{ matrix.suite }}
 
     steps:
       - name: Checkout
@@ -124,7 +122,7 @@ jobs:
           name: test-artifacts-${{ matrix.suite }}
           path: |
             TestResults/**
-            allure-results-${{ matrix.suite }}/**
+            **/allure-results/**
           if-no-files-found: ignore
 
   # ─── Publish Allure report to GitHub Pages ─────────────────────────────────
@@ -159,20 +157,20 @@ jobs:
           mkdir -p merged-allure-results
 
           echo "=== Artifact structure ==="
-          find downloaded-artifacts -maxdepth 4 -type d | head -30
+          find downloaded-artifacts -type d -name "allure-results"
 
-          # Copy only files from allure-results-* directories (not TRX, not config)
-          for suite in smoke regression api; do
-            src="downloaded-artifacts/test-artifacts-${suite}/allure-results-${suite}"
+          # Copy only files from directories named allure-results
+          find downloaded-artifacts -type d -name "allure-results" | while read src; do
             if [ -d "$src" ]; then
               echo "Copying Allure results from: $src"
               cp -r "$src"/. merged-allure-results/ 2>/dev/null || true
-            else
-              echo "No Allure results found for suite: ${suite} (looked in ${src})"
             fi
           done
 
-          echo "=== Merged results ($(ls merged-allure-results | wc -l) files) ==="
+          # Ensure allureConfig.json isn't treated as a test result
+          rm -f merged-allure-results/allureConfig.json
+
+          echo "=== Merged results ($(ls -1 merged-allure-results | wc -l) files) ==="
           ls merged-allure-results/ | head -20
 
           # Generate report — works even with zero result files
