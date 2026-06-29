@@ -45,15 +45,30 @@ public sealed class DataTableComponent
     {
         try
         {
-            // Wait until at least one row is visible, then count synchronously.
+            // Poll until the row count stabilises — OrangeHRM renders rows progressively
+            // after a filter reset, so a single snapshot can catch a partial load.
+            var stableCount = 0;
+            var consecutiveStable = 0;
+
             _waiter.Until(driver =>
-                driver.FindElements(TableRows).Any(r => r.Displayed));
+            {
+                var current = driver.FindElements(TableRows).Count(r => r.Displayed);
+                if (current > 0 && current == stableCount)
+                {
+                    consecutiveStable++;
+                    return consecutiveStable >= 2; // Two identical readings = stable
+                }
+                stableCount = current;
+                consecutiveStable = 0;
+                return false;
+            });
 
             return _driver.FindElements(TableRows).Count(r => r.Displayed);
         }
         catch (WebDriverTimeoutException)
         {
-            return 0;
+            // Return whatever we have if stabilisation timed out
+            return _driver.FindElements(TableRows).Count(r => r.Displayed);
         }
     }
 

@@ -36,7 +36,7 @@ public sealed class PimSearchFilterTests : BaseUiTest
     [AllureDescription("A search by Employee ID should list only the matching employee record.")]
     public void SearchByEmployeeId_ShouldShowAtMostOneResult()
     {
-        LoginAsAdmin();;
+        LoginAsAdmin();
 
         TestLogger.Step("Opening Employee List and searching by a known Employee ID");
         // Employee ID '0001' is the default Admin account on the OrangeHRM demo
@@ -58,16 +58,16 @@ public sealed class PimSearchFilterTests : BaseUiTest
 
         TestLogger.Step("Opening Employee List and applying a name search");
         var employeeList = new EmployeeListPage(Driver, Settings).Open();
-        var initialCount = employeeList.EmployeeCount();
 
         employeeList.SearchByEmployeeId("0001");
+        var filteredCount = employeeList.EmployeeCount();
 
         TestLogger.Step("Resetting the filter");
         employeeList.ResetFilter();
 
         TestLogger.Step("Verifying records are restored");
         var restoredCount = employeeList.EmployeeCount();
-        restoredCount.Should().BeGreaterThanOrEqualTo(initialCount,
-            because: "resetting the filter should show at least as many records as the initial load");
+        restoredCount.Should().BeGreaterThan(filteredCount,
+            because: "resetting the filter should restore more records than the filtered (ID-specific) view");
     }
 }

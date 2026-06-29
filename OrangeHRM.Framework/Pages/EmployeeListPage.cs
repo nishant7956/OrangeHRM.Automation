@@ -17,6 +17,9 @@ public sealed class EmployeeListPage : BasePage
     public EmployeeListPage Open()
     {
         NavigateTo("pim/viewEmployeeList");
+        // Wait for URL to settle on the PIM page first (fast signal),
+        // then wait for the page heading (slower — retried up to timeout).
+        Waiter.Until(d => d.Url.Contains("pim"));
         Waiter.Visible(EmployeeListHeader);
         return this;
     }
