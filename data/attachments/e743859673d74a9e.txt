@@ -1,0 +1,2 @@
+[16:21:05.432] [STEP ] Test starting: OrangeHRM.Tests.UI.Smoke.LoginTests.Logout_ShouldReturnToLoginPage
+[16:21:10.704] [STEP ] Test finished: Passed — Logout_ShouldReturnToLoginPage

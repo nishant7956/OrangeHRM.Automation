@@ -1,0 +1,2 @@
+[16:22:05.006] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimEmployeeTests.SearchEmployee_ShouldFindCreatedEmployee
+[16:22:18.229] [STEP ] Test finished: Passed — SearchEmployee_ShouldFindCreatedEmployee
