@@ -1,4 +1,0 @@
-[15:21:19.837] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserRoleTests.FilterByAdminRole_ShouldReturnResults
-[15:21:23.969] [STEP ] Opening Admin module and filtering by 'Admin' role
-[15:21:44.378] [STEP ] Test finished: Failed — FilterByAdminRole_ShouldReturnResults
-[15:21:44.520] [ERROR] Screenshot saved: TestResults/FilterByAdminRole_ShouldReturnResults_20260629_152144.png

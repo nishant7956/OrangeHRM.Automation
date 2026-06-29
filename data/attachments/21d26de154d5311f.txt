@@ -1,3 +1,0 @@
-[15:22:01.335] [STEP ] Test starting: OrangeHRM.Tests.UI.Smoke.LoginTests.ValidLogin_ShouldOpenDashboard
-[15:22:24.918] [STEP ] Test finished: Failed — ValidLogin_ShouldOpenDashboard
-[15:22:24.989] [ERROR] Screenshot saved: TestResults/ValidLogin_ShouldOpenDashboard_20260629_152224.png
