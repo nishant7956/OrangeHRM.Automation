@@ -28,12 +28,12 @@ public sealed class LoginPage : BasePage
         Click(LoginButton);
 
         // Wait for the login attempt to settle. Two outcomes are possible:
-        //   • Valid credentials   → browser redirects to /dashboard/ URL
+        //   • Valid credentials   → Dashboard header h6 becomes visible
         //   • Invalid credentials → browser stays on login page and shows an alert
-        // Waiting for only one outcome causes the other path to block for the
-        // full timeout (40 s). This condition exits as soon as either fires.
+        // Waiting for the DOM element (not just the URL) ensures the Vue app
+        // has fully hydrated the sidebar before the next test step executes.
         Waiter.Until(driver =>
-            driver.Url.Contains("/dashboard/") ||
+            driver.FindElements(By.XPath("//h6[normalize-space()='Dashboard']")).Any(e => e.Displayed) ||
             driver.FindElements(AlertMessage).Any(e => e.Displayed));
 
         return new DashboardPage(Driver, Settings);
