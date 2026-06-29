@@ -26,6 +26,12 @@ public sealed class LoginPage : BasePage
         Type(UsernameInput, username);
         Type(PasswordInput, password);
         Click(LoginButton);
+
+        // Wait for the post-login redirect to complete before handing back
+        // the DashboardPage. Without this, IsLoaded() races against the
+        // navigation on slow CI runners and times out at 20 s.
+        Waiter.Until(driver => driver.Url.Contains("/dashboard/"));
+
         return new DashboardPage(Driver, Settings);
     }
 

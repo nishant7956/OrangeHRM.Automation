@@ -46,6 +46,9 @@ jobs:
       ORANGEHRM_PASSWORD: admin123
       BOOKER_BASE_URL: https://restful-booker.herokuapp.com
       TEST_ARTIFACTS_DIR: TestResults
+      # Raised from 20 s → 40 s: the external OrangeHRM demo server can be
+      # slow on cold starts in CI, causing false-negative timeouts.
+      TIMEOUT_SECONDS: "40"
 
     steps:
       - name: Checkout
