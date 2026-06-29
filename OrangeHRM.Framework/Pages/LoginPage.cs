@@ -27,10 +27,14 @@ public sealed class LoginPage : BasePage
         Type(PasswordInput, password);
         Click(LoginButton);
 
-        // Wait for the post-login redirect to complete before handing back
-        // the DashboardPage. Without this, IsLoaded() races against the
-        // navigation on slow CI runners and times out at 20 s.
-        Waiter.Until(driver => driver.Url.Contains("/dashboard/"));
+        // Wait for the login attempt to settle. Two outcomes are possible:
+        //   • Valid credentials   → browser redirects to /dashboard/ URL
+        //   • Invalid credentials → browser stays on login page and shows an alert
+        // Waiting for only one outcome causes the other path to block for the
+        // full timeout (40 s). This condition exits as soon as either fires.
+        Waiter.Until(driver =>
+            driver.Url.Contains("/dashboard/") ||
+            driver.FindElements(AlertMessage).Any(e => e.Displayed));
 
         return new DashboardPage(Driver, Settings);
     }
