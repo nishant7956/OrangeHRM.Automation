@@ -1,0 +1,2 @@
+[12:42:40.278] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserTests.SaveBlankUser_ShouldShowRequiredValidationMessages
+[12:42:59.142] [STEP ] Test finished: Passed — SaveBlankUser_ShouldShowRequiredValidationMessages
