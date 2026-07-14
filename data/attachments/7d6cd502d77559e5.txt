@@ -1,0 +1,3 @@
+[11:57:59.818] [STEP ] Test starting: OrangeHRM.Tests.UI.Leave.LeaveNavigationTests.NavigateToLeave_ShouldShowLeaveListHeader
+[11:58:59.820] [STEP ] Test finished: Failed — NavigateToLeave_ShouldShowLeaveListHeader
+[11:58:59.888] [ERROR] Screenshot saved: TestResults/NavigateToLeave_ShouldShowLeaveListHeader_20260714_115859.png

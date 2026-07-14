@@ -1,0 +1,3 @@
+[12:04:02.925] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimSearchFilterTests.SearchByNonsenseName_ShouldShowNoRecordsFound
+[12:05:02.930] [STEP ] Test finished: Failed — SearchByNonsenseName_ShouldShowNoRecordsFound
+[12:05:03.036] [ERROR] Screenshot saved: TestResults/SearchByNonsenseName_ShouldShowNoRecordsFound_20260714_120502.png
