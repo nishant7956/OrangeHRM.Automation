@@ -1,3 +1,0 @@
-[11:56:59.302] [STEP ] Test starting: OrangeHRM.Tests.UI.Leave.LeaveNavigationTests.LeaveList_ShouldHaveSearchFilters
-[11:57:59.305] [STEP ] Test finished: Failed — LeaveList_ShouldHaveSearchFilters
-[11:57:59.372] [ERROR] Screenshot saved: TestResults/LeaveList_ShouldHaveSearchFilters_20260714_115759.png
