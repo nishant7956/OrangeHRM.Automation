@@ -1,3 +1,0 @@
-[11:28:06.878] [STEP ] API client initialised
-[11:28:06.880] [STEP ] Calling GET /booking
-[11:28:07.015] [STEP ] Received 2656 booking IDs
