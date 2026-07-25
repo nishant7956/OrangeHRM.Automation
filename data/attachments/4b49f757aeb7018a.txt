@@ -1,2 +1,0 @@
-[12:05:36.688] [STEP ] Test starting: OrangeHRM.Tests.UI.Recruitment.RecruitmentTests.CandidateList_ShouldExposeSearchFilters
-[12:05:53.323] [STEP ] Test finished: Passed — CandidateList_ShouldExposeSearchFilters
