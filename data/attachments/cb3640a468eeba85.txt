@@ -1,3 +1,0 @@
-[12:12:10.523] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserRoleTests.ResetRoleFilter_ShouldRestoreAllUsers
-[12:13:22.423] [STEP ] Test finished: Failed — ResetRoleFilter_ShouldRestoreAllUsers
-[12:13:22.512] [ERROR] Screenshot saved: TestResults/ResetRoleFilter_ShouldRestoreAllUsers_20260730_121322.png
