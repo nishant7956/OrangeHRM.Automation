@@ -1,2 +1,0 @@
-[10:46:42.358] [STEP ] Test starting: OrangeHRM.Tests.UI.Leave.LeaveTests.LeaveList_ShouldExposeSearchFilters
-[10:46:47.415] [STEP ] Test finished: Passed — LeaveList_ShouldExposeSearchFilters
