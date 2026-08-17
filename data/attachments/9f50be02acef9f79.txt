@@ -1,0 +1,5 @@
+[10:55:24.017] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserRoleTests.FilterByEssRole_ShouldReturnFewerOrEqualResultsThanTotal
+[10:55:28.803] [STEP ] Opening Admin module and recording total user count
+[10:55:32.347] [STEP ] Filtering by 'ESS' role
+[10:55:34.603] [STEP ] Total users: 39, ESS users: 36
+[10:55:34.603] [STEP ] Test finished: Passed — FilterByEssRole_ShouldReturnFewerOrEqualResultsThanTotal
