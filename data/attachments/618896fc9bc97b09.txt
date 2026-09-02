@@ -1,0 +1,4 @@
+[14:39:09.703] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimSearchFilterTests.SearchByNonsenseName_ShouldShowNoRecordsFound
+[14:39:20.854] [STEP ] Searching for an employee name that does not exist
+[14:39:25.700] [STEP ] Verifying empty-state is displayed
+[14:39:27.230] [STEP ] Test finished: Passed — SearchByNonsenseName_ShouldShowNoRecordsFound
