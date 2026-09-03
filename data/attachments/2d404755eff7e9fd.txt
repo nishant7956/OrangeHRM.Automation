@@ -1,4 +1,0 @@
-[14:36:18.958] [STEP ] Test starting: OrangeHRM.Tests.UI.Leave.LeaveNavigationTests.NavigateToLeave_ShouldShowLeaveListHeader
-[14:36:23.466] [STEP ] Opening the Leave module via sidebar
-[14:36:24.933] [STEP ] Verifying the Leave List header is visible
-[14:36:24.944] [STEP ] Test finished: Passed — NavigateToLeave_ShouldShowLeaveListHeader

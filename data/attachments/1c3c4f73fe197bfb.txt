@@ -1,0 +1,5 @@
+[14:41:55.395] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimSearchFilterTests.ResetFilter_ShouldRestoreAllRecords
+[14:42:01.031] [STEP ] Opening Employee List and applying a name search
+[14:42:05.487] [STEP ] Resetting the filter
+[14:42:05.541] [STEP ] Verifying records are restored
+[14:42:07.977] [STEP ] Test finished: Passed — ResetFilter_ShouldRestoreAllRecords
