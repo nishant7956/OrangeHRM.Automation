@@ -1,4 +1,0 @@
-[13:29:55.270] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserRoleTests.ResetRoleFilter_ShouldRestoreAllUsers
-[13:30:00.003] [STEP ] Opening Admin module and getting initial total user count
-[13:30:03.745] [STEP ] Filtering by Admin role to reduce visible rows
-[13:30:05.490] [STEP ] Test finished: Passed — ResetRoleFilter_ShouldRestoreAllUsers
