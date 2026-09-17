@@ -1,3 +1,0 @@
-[15:07:29.368] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimSearchFilterTests.ResetFilter_ShouldRestoreAllRecords
-[15:08:31.725] [STEP ] Test finished: Failed — ResetFilter_ShouldRestoreAllRecords
-[15:08:31.807] [ERROR] Screenshot saved: TestResults/ResetFilter_ShouldRestoreAllRecords_20260916_150831.png

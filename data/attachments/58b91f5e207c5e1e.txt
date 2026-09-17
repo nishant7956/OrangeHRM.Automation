@@ -1,2 +1,0 @@
-[15:06:37.270] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserTests.SearchAdminUser_ShouldShowAdminInResults
-[15:06:43.319] [STEP ] Test finished: Passed — SearchAdminUser_ShouldShowAdminInResults
