@@ -1,4 +1,0 @@
-[16:32:21.260] [STEP ] API client initialised
-[16:32:21.261] [STEP ] Calling GET /booking with only firstname
-[16:32:21.280] [STEP ] Calling GET /booking with firstname AND lastname
-[16:32:21.285] [STEP ] firstname=0 | firstname+lastname=0
