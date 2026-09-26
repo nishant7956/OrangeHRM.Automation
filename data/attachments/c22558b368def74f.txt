@@ -1,0 +1,4 @@
+[14:36:31.764] [STEP ] API client initialised
+[14:36:31.765] [STEP ] Creating a booking with unique first name: FilterTest8b29b7e3
+[14:36:31.791] [STEP ] Filtering bookings by firstname=FilterTest8b29b7e3
+[14:36:31.802] [STEP ] Cleaned up booking 2951
