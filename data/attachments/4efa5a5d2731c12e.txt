@@ -1,0 +1,4 @@
+[16:20:02.343] [STEP ] Test starting: OrangeHRM.Tests.UI.Leave.LeaveNavigationTests.LeaveList_ShouldHaveSearchFilters
+[16:20:06.172] [STEP ] Opening the Leave module
+[16:20:07.491] [STEP ] Verifying the Search filter panel is present
+[16:20:07.507] [STEP ] Test finished: Passed — LeaveList_ShouldHaveSearchFilters
