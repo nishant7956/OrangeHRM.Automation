@@ -1,0 +1,16 @@
+[17:06:24.056] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserRoleTests.FilterByAdminRole_ShouldReturnResults
+[17:06:29.120] [STEP ] Opening Admin module and filtering by 'Admin' role
+[17:06:30.940] [STEP ] Verifying at least one Admin user is listed
+     Warning:
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.
+
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.
+
+     A paid commercial license supports the development and continued increasing support of
+     Fluent Assertions users under both commercial and community licenses. Help us
+     keep Fluent Assertions at the forefront of unit testing.
+
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/
+[17:06:32.606] [STEP ] Test finished: Passed — FilterByAdminRole_ShouldReturnResults
