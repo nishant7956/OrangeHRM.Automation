@@ -1,3 +1,0 @@
-[15:17:26.321] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserRoleTests.FilterByEssRole_ShouldReturnFewerOrEqualResultsThanTotal
-[15:18:11.063] [STEP ] Test finished: Failed — FilterByEssRole_ShouldReturnFewerOrEqualResultsThanTotal
-[15:18:11.150] [ERROR] Screenshot saved: TestResults/FilterByEssRole_ShouldReturnFewerOrEqualResultsThanTotal_20261023_151811.png

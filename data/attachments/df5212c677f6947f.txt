@@ -1,3 +1,0 @@
-[15:16:21.326] [STEP ] API client initialised
-[15:16:21.327] [STEP ] Filtering by non-existent name: zzz_no_such_guest_ccd2bd210e584bbb98fbfb7347699fca
-[15:16:21.441] [STEP ] Received 0 result(s)
