@@ -1,3 +1,0 @@
-[18:28:41.294] [STEP ] Test starting: OrangeHRM.Tests.UI.Admin.AdminUserRoleTests.FilterByAdminRole_ShouldReturnResults
-[18:29:41.315] [STEP ] Test finished: Failed — FilterByAdminRole_ShouldReturnResults
-[18:29:41.430] [ERROR] Screenshot saved: TestResults/FilterByAdminRole_ShouldReturnResults_20261112_182941.png

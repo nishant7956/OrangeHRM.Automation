@@ -1,3 +1,0 @@
-[18:39:48.636] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimSearchFilterTests.SearchByEmployeeId_ShouldShowAtMostOneResult
-[18:40:48.638] [STEP ] Test finished: Failed — SearchByEmployeeId_ShouldShowAtMostOneResult
-[18:40:48.708] [ERROR] Screenshot saved: TestResults/SearchByEmployeeId_ShouldShowAtMostOneResult_20261112_184048.png

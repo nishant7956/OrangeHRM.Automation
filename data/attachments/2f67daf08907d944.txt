@@ -1,0 +1,4 @@
+[17:59:31.967] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimSearchFilterTests.SearchByEmployeeId_ShouldShowAtMostOneResult
+[17:59:46.108] [STEP ] Opening Employee List and searching by a known Employee ID
+[17:59:54.519] [STEP ] Verifying result count is between 0 and 1
+[17:59:58.202] [STEP ] Test finished: Passed — SearchByEmployeeId_ShouldShowAtMostOneResult
