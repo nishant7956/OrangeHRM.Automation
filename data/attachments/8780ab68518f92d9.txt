@@ -1,0 +1,2 @@
+[19:16:26.372] [STEP ] Test starting: OrangeHRM.Tests.UI.Pim.PimEmployeeTests.AddEmployee_ShouldCreateEmployeeProfile
+[19:16:37.102] [STEP ] Test finished: Passed — AddEmployee_ShouldCreateEmployeeProfile
